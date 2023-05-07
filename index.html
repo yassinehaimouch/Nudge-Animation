@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>Document</title>
+    <style>
+      #container {
+        display: flex;
+        width: 1080px;
+        height: 1350px;
+        overflow: hidden;
+      }
+      #img1 {
+        position: absolute;
+        overflow: hidden;
+      }
+
+      #img2 {
+        position: relative;
+        z-index: 100;
+        left: 1500px;
+        animation-name: example;
+        animation-duration: 4s;
+      }
+
+      @keyframes example {
+        /* 0%   {background-color:red; left:0px; top:0px;}
+  25%  {background-color:yellow; left:200px; top:0px;}
+  50%  {background-color:blue; left:200px; top:200px;} */
+        30% {
+          background-color: green;
+          left: 900px;
+        }
+        /* 100% {background-color:red; left:0px; top:0px;} */
+      }
+    </style>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div id="container">
+      <img src="./assets/1.jpg" alt="image-1" id="img1" />
+      <img src="./assets/2.jpg" alt="image-2" id="img2" />
+    </div>
+    <button id="btn">Save</button>
+  </body>
+</html>
