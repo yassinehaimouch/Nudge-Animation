@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nudge Animation</title>
+    <style>
+      #container {
+        display: flex;
+        width: 1080px;
+        height: 1350px;
+        overflow: hidden;
+      }
+      #img1 {
+        position: absolute;
+        overflow: hidden;
+      }
+
+      #img2 {
+        position: relative;
+        z-index: 100;
+        left: 1500px;
+        animation: example 3s infinite;
+      }
+
+      @keyframes example {
+        30% {
+          left: 910px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <img src="./assets/1.jpg" id="img1" />
+      <img src="./assets/2.jpg" id="img2" />
+    </div>
+    <button onclick="captureFrames()">Save GIF</button>
+    <a>download</a>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+    <script>
+      function captureFrames() {
+        const container = document.getElementById("container");
+        const fps = 30; // Frames per second
+        const duration = 5; // Duration of the animation in seconds
+        const totalFrames = fps * duration;
+        const canvasList = [];
+
+        // Capture frames using html2canvas library
+        function captureFrame(frameIndex) {
+          html2canvas(container, { willReadFrequently: true }).then(
+            (canvas) => {
+              canvasList.push(canvas);
+
+              if (frameIndex === totalFrames) {
+                convertToGIF();
+              } else {
+                const progress = ((frameIndex + 1) / totalFrames) * 100;
+                console.log(`Capturing frames: ${progress.toFixed(2)}%`);
+
+                // Update the animation progress
+                container.style.animationProgress = `${
+                  (frameIndex / totalFrames) * 100
+                }%`;
+
+                // Wait for the next frame before capturing
+                setTimeout(() => {
+                  captureFrame(frameIndex + 1);
+                }, 1000 / fps);
+              }
+            }
+          );
+        }
+
+        // Convert captured frames to a GIF using gif.js library
+        function convertToGIF() {
+          const gif = new GIF({
+            workers: 2,
+            quality: 10,
+            width: 1080,
+            height: 1350,
+          });
+
+          canvasList.forEach((canvas) => {
+            gif.addFrame(canvas, { delay: 1000 / fps });
+          });
+
+          gif.on("finished", function (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.querySelector("a");
+            link.href = url;
+            link.download = "animation.gif";
+            link.click();
+            console.log("GIF saved!");
+          });
+
+          gif.render();
+        }
+
+        // Start capturing frames
+        captureFrame(0);
+      }
+    </script>
+  </body>
+</html>
